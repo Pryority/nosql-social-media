@@ -2,17 +2,24 @@ const { Thought, User } = require('../models');
 
 const thoughtController = {
     // add comment to pizza
-    addThought() {
+    addThought({ params, body }, res) {
         console.log(body);
         Comment.create(body)
             .then(({ _id }) => {
-                console.log(_id)
+                return Pizza.findOneAndUpdate(
+                    { _id: params.pizzaId },
+                    { $push: { comments: _id } },
+                    { new: true }
+                );
             })
-    },
-
-    // remove comment
-    removeThought() {
-
+            .then(dbPizzaData => {
+                if (!dbPizzaData) {
+                    res.status(404).json({ message: 'No pizza found with this id!' });
+                    return;
+                }
+                res.json(dbPizzaData);
+            })
+            .catch(err => res.json(err));
     }
 };
 
