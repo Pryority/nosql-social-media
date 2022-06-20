@@ -12,16 +12,16 @@ const ThoughtSchema = new Schema(
             minlength: 1,
             maxlength: 280,
         },
-        email: {
-            type: String,
-            required: true,
-            trim: true,
-            unique: true
-        },
         createdAt: {
             type: Date,
             default: Date.now,
             get: createdAtVal => dateFormat(createdAtVal)
+        },
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+            user: { type: Schema.Types.ObjectId, ref: 'User' },
         },
         reactions: [reactionSchema]
     },
